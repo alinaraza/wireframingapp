@@ -1,0 +1,324 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Wireframing Made Easy</title>
+
+<script src="https://d309knd7es5f10.cloudfront.net/createjs_1.1_min.js"></script>
+<script src="https://d309knd7es5f10.cloudfront.net/zim_9.4.0.js"></script>
+<!-- use zimjs.com/distill for minified individual functions! -->
+
+<script>
+
+var scaling = "full"; // this will resize to fit inside the screen dimensions
+var width =  1920;
+var height = 1180;
+var color = white; // ZIM colors like green, blue, pink, faint, clear, etc. available globally
+var outerColor = dark; // any HTML colors like "violet", "#333", etc. fine to use
+var assets = ["topbar.png"];
+var path = "assets/"
+var frame = new Frame(scaling, width, height, color, outerColor, assets, path, new Waiter());
+frame.on("ready", function() {
+    zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
+
+
+    var stage = frame.stage;
+    var stageW = frame.width;
+    var stageH = frame.height;
+
+    var current; var blob; var shapes;
+    var button; var circle; var rect; var triBlob; var rrectBlob; var imgRect; var Btn;
+
+    makeWireframe();
+    function makeWireframe(){
+
+       var label = new Label ({text:"Create Wireframes", color:"gray"}).pos(1100,650)
+
+
+
+        //textarea for page title
+        var appName = new TextArea(400, 150, 30, 40)
+            .addTo()
+            .pos(1000,50);
+        // textArea.text = "Page name goes here.."
+
+        appName.on("input",function(){
+            textPhone.text = appName.text})
+
+        //rectangle screen for wireframe
+        var screenContainer  = new Container (300, 600)
+            .addTo(stage)
+            .center()
+            .mov(0,-50)
+            // .outline();
+
+
+        var mobileScreen = new Rectangle({
+            width: 300,
+            height:600,
+            color:"white",
+            borderColor:"gray"})
+            .addTo(screenContainer)
+            .center()
+
+        var topbar = frame.asset("topbar.png")
+            .addTo(screenContainer)
+            .center()
+            .pos(15,10)
+            .sca(0.7)
+
+        
+        var textPhone = new Label ({
+            text:"",
+            size:20,
+            align:"center"
+        })
+                .addTo(screenContainer)
+                .center()
+                .pos(145,15)
+        var loader = new Loader();
+
+        var sideBar = new Container(250, stageH)
+            .center()
+            .mov(-650, 0)
+            // .outline();
+
+
+        var rectSideBar = new Rectangle ({
+            width: 250,
+            height:stageH,
+            color:"#FFC914"
+        })
+
+            .addTo(sideBar)
+            .center()
+
+
+        var bottomBar = new Container(stageW, 200)
+            .center()
+            .mov(195,400)
+            // .outline()
+
+        var rectBottomBar = new Rectangle ({
+            width: stageW,
+            height:200,
+            color:"#1B2845"
+        })
+            
+            .addTo(bottomBar)
+            .center()
+            .mov(-195,0)
+            
+
+
+        var clearBtn = new Button ({
+            corner:0,
+            width:100,
+            label: "Clear",
+            backgroundColor:"#A63D40",
+            rollBackgroundColor: "#8C353C"
+        })
+            .addTo(sideBar)
+            .mov(100, 50);
+
+        clearBtn.on("click", function(){
+            stage.removeAllChildren();
+            makeWireframe();
+        })
+
+        var saveBtn = new Button ({
+            corner:0,
+            width:100,
+            label: "Save",
+            backgroundColor:"#A63D40",
+            rollBackgroundColor: "#8C353C"
+        })
+
+            .addTo(sideBar)
+            .mov(100, 150)
+        saveBtn.on("click",function(){
+            loader.save(screenContainer);
+        })
+
+        var customData =
+            //data for custom shape
+            [[-1.2,37.8,0,0,-50,0,50,0,"mirror"],
+            [100,0,0,0,0,-50,0,50,"mirror"],
+            [0,100,0,0,50,0,-50,0,"mirror"],
+            [-100,0,0,0,0,50,0,-50,"mirror"]]
+
+        var rrectData =
+            //data for rounded-rectangle
+            [[0,-100,0,0,-100,0,100,0,"mirror"],
+            [100,0,0,0,0,-100,0,100,"mirror"],
+            [0,100,0,0,100,0,-100,0,"mirror"],
+            [-100,0,0,0,0,100,0,-100,"mirror"]]
+
+        var circLabel = new Label ({size: 20, text:"Circle",color:"white"});
+        var rectLabel = new Label ({size: 20, text:"Rectangle",color:"white"});
+        var customLabel= new Label ({size: 20, text:"Customize Shape",color:"white"});
+        var rrectLabel = new Label ({size: 20, text:"Round Rectangle",color:"white"});
+        var imgLabel = new Label ({size: 20, text:"Image Placeholder",color:"white"});
+        var btnLabel = new Label ({size: 20, text:"Add Button",color:"white"});
+
+
+        var circleBtn = new Button ({
+            corner:0,
+            label:circLabel,
+            backgroundColor:"#A63D40",
+            rollBackgroundColor: "#8C353C"
+        })
+            .center()
+            .pos(250,700)
+        circleBtn.on("click",function(){
+            circle = new Circle({
+                color:"white",
+                borderColor:"gray",
+            })
+
+                .addTo(screenContainer)
+                .center()
+                .drag()
+                circle.transform();
+        })
+        var rectBtn = new Button ({
+            corner:0,
+            label:rectLabel,
+            backgroundColor:"#A63D40",
+            rollBackgroundColor: "#8C353C"
+        })
+            .center()
+            .pos(20,700)
+        rectBtn.on("click",function(){
+            rect = new Rectangle({
+
+                color:"white",
+                borderColor:"gray",
+
+            })
+                .addTo(screenContainer)
+
+                .center()
+                .drag()
+                rect.transform();;
+        })
+        var customBtn = new Button ({
+            corner:0,
+            label:customLabel,
+            backgroundColor:"#A63D40",
+            rollBackgroundColor: "#8C353C"
+        })
+            .center()
+            .pos(480,700)
+        customBtn.on("click",function(){
+            customBlob = new Blob({
+                points:customData,
+                color:"white",
+                borderColor:"gray",
+                editPoints:false,
+                controlType:"straight"
+            })
+                .tap(function(e){
+                })
+                .addTo(screenContainer)
+
+                .center()
+                .drag();
+        })
+
+        var rrectBtn = new Button ({
+            corner:0,
+            label:rrectLabel,
+            backgroundColor:"#A63D40",
+            rollBackgroundColor: "#8C353C"
+        })
+            .center()
+            .pos(710,700)
+        rrectBtn.on("click",function(){
+            rrectBlob = new Blob({
+                points:rrectData,
+                color:"white",
+                borderColor:"gray",
+                editPoints:false,
+                controlType:"straight"
+            })
+                .tap(function(e){
+                })
+                .addTo(screenContainer)
+                .center()
+                .drag()
+                rrectBlob.transform();
+        })
+        var imgBtn = new Button ({
+            corner:0,
+            label:imgLabel,
+            backgroundColor:"#A63D40",
+            rollBackgroundColor: "#8C353C"
+        })
+            .center()
+            .pos(940,700)
+        imgBtn.on("click",function(){
+            imgRect = new Rectangle({
+                color:"gray"
+            })
+                .tap(function(e){
+                })
+
+                .addTo(screenContainer)
+                .center()
+                .drag()
+                imgRect.transform();
+        })
+        var btnInstruct = new Label ({
+            text:"After adding button, write the label for the button \n in the area below",
+            color:"gray",
+            size:20,
+            align:"center"
+        })
+            .center()
+            .pos(970,250)
+
+        var btnText = new TextArea(400, 150, 30, 40)
+            .addTo()
+            .pos(1000,300);
+
+            btnText.on("input",function(){
+            btn.text = btnText.text})
+
+        var newBtn  = new Button ({
+            corner:0,
+            label: btnLabel,
+            backgroundColor:"#A63D40",
+            rollBackgroundColor: "#8C353C"
+        })
+            .center()
+            .pos(1170,700)
+        newBtn.on("click",function(){
+            btn =  new Button({
+                label: "" ,
+                backgroundColor:"gray",
+                rollBackgroundColor:"dark",
+                width:160,
+                height:50
+            })
+                .addTo(screenContainer)
+                .center()
+                .drag()
+                btn.transform();
+
+    })
+
+    stage.update(); // this is needed to show any changes
+
+}}); // end of ready
+
+</script>
+
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+
+</head>
+
+<body>
+<!-- canvas with id="myCanvas" is made by zim Frame -->
+</body>
+</html>
